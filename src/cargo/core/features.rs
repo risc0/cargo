@@ -874,7 +874,8 @@ impl CliUnstable {
             "mtime-on-use" => self.mtime_on_use = parse_empty(k, v)?,
             "named-profiles" => stabilized_warn(k, "1.57", STABILIZED_NAMED_PROFILES),
             "binary-dep-depinfo" => self.binary_dep_depinfo = parse_empty(k, v)?,
-            "bindeps" => self.bindeps = parse_empty(k, v)?,
+            // RISC0: Allow bindeps in all cases when using risc0 toolchain.
+            "bindeps" => self.bindeps = true,
             "build-std" => {
                 self.build_std = Some(crate::core::compiler::standard_lib::parse_unstable_flag(v))
             }
