@@ -2727,7 +2727,6 @@ impl<P: ResolveToPath + Clone> DetailedTomlDependency<P> {
             self.lib.unwrap_or(false),
             self.target.as_deref(),
         ) {
-            if cx.config.cli_unstable().bindeps {
                 let artifact = Artifact::parse(artifact, is_lib, target)?;
                 if dep.kind() != DepKind::Build
                     && artifact.target() == Some(ArtifactTarget::BuildDependencyAssumeTarget)
@@ -2738,9 +2737,6 @@ impl<P: ResolveToPath + Clone> DetailedTomlDependency<P> {
                     );
                 }
                 dep.set_artifact(artifact)
-            } else {
-                bail!("`artifact = …` requires `-Z bindeps` ({})", name_in_toml);
-            }
         } else if self.lib.is_some() || self.target.is_some() {
             for (is_set, specifier) in [
                 (self.lib.is_some(), "lib"),

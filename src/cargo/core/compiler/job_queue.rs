@@ -70,7 +70,7 @@ use super::job::{
     Job,
 };
 use super::timings::Timings;
-use super::{BuildContext, BuildPlan, CompileMode, Context, Unit};
+use super::{BuildContext, BuildPlan, CompileKind, CompileMode, Context, Unit};
 use crate::core::compiler::future_incompat::{
     self, FutureBreakageItem, FutureIncompatReportPackage,
 };
@@ -1208,7 +1208,26 @@ impl<'cfg> DrainState<'cfg> {
                     if unit.mode.is_check() {
                         config.shell().status("Checking", &unit.pkg)?;
                     } else {
-                        config.shell().status("Compiling", &unit.pkg)?;
+                        let mut additional = String::new();
+                        if unit.kind != CompileKind::Host {
+                            write!(&mut additional, "for {}", unit.kind)?;
+                        }
+                        match unit.mode {
+                            CompileMode::Build | CompileMode::Test | CompileMode::RunCustomBuild =>
+                                (),
+                            _ => {if additional.is_empty() {
+                                write!(&mut additional, "for {}", unit.mode)?;
+                            } else {
+                                write!(&mut additional, " ({})", unit.mode)?;
+                            }
+                            }
+                        }
+                        if additional.is_empty() {
+                            config.shell().status("Compiling", &unit.pkg)?;
+                        } else {
+                            config.shell().status("Compiling", format!("{} {}", &unit.pkg, additional))?;
+                        }
+
                     }
                 }
             }

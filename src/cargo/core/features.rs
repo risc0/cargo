@@ -635,7 +635,7 @@ unstable_cli_options!(
     advanced_env: bool = (HIDDEN),
     avoid_dev_deps: bool = ("Avoid installing dev-dependencies if possible"),
     binary_dep_depinfo: bool = ("Track changes to dependency artifacts"),
-    bindeps: bool = ("Allow Cargo packages to depend on bin, cdylib, and staticlib crates, and use the artifacts built by those crates"),
+    bindeps: () = ("Allow Cargo packages to depend on bin, cdylib, and staticlib crates, and use the artifacts built by those crates"),
     #[serde(deserialize_with = "deserialize_build_std")]
     build_std: Option<Vec<String>>  = ("Enable Cargo to compile the standard library itself as part of a crate graph compilation"),
     build_std_features: Option<Vec<String>>  = ("Configure features enabled for the standard library itself when building the standard library"),
@@ -874,8 +874,8 @@ impl CliUnstable {
             "mtime-on-use" => self.mtime_on_use = parse_empty(k, v)?,
             "named-profiles" => stabilized_warn(k, "1.57", STABILIZED_NAMED_PROFILES),
             "binary-dep-depinfo" => self.binary_dep_depinfo = parse_empty(k, v)?,
-            // RISC0: Allow bindeps in all cases when using risc0 toolchain.
-            "bindeps" => self.bindeps = true,
+            // risc0: Allow bindeps in all cases when using risc0 toolchain.  Ignore bindeps opti
+            "bindeps" => (),
             "build-std" => {
                 self.build_std = Some(crate::core::compiler::standard_lib::parse_unstable_flag(v))
             }

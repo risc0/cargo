@@ -167,6 +167,12 @@ pub enum CompileMode {
     RunCustomBuild,
 }
 
+impl std::fmt::Display for CompileMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
 impl ser::Serialize for CompileMode {
     fn serialize<S>(&self, s: S) -> Result<S::Ok, S::Error>
     where

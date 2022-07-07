@@ -27,6 +27,17 @@ pub enum CompileKind {
     Target(CompileTarget),
 }
 
+impl std::fmt::Display for CompileKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CompileKind::Host =>
+                write!(f, "Host"),
+            CompileKind::Target(target) => write!(f, "{}", target.name)
+        }
+    }
+
+}
+
 impl CompileKind {
     pub fn is_host(&self) -> bool {
         matches!(self, CompileKind::Host)
